@@ -4,4 +4,4 @@
   :license "MIT"
   :defsystem-depends-on ("wild-package-inferred-system")
   :class "winfer:wild-package-inferred-system"
-  :depends-on ("linux-packaging/*"))
+  :depends-on ("linux-packaging/*" "cffi-grovel"))
