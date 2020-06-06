@@ -1,0 +1,5 @@
+*.rpm
+*.deb
+*.pkg.xz
+other-random-name
+*.fasl
