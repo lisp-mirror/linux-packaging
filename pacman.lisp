@@ -14,4 +14,4 @@
 
 (defmethod path->package ((s pacman) path)
   ;; output is: "<file> is owned by <package> <version>"
-  (fourth (split " " (run-program `("pacman" "-Qo" ,path)))))
+  (fifth (split " " (run-program `("pacman" "-Qo" ,path) :output '(:string :stripped t)))))

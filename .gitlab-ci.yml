@@ -1,0 +1,22 @@
+deb:
+  image: debian:sid
+  script:
+    - apt-get update -qq
+    - apt-get install -y ruby ruby-dev rubygems dpkg-dev sbcl curl git-core zlib1g-dev
+    - ./.ci/build.sh deb
+    - ./.ci/tests.sh deb
+
+rpm:
+  image: fedora:rawhide
+  script:
+    - dnf groupinstall -y "Development Tools"
+    - dnf install -y ruby ruby-devel rubygems rpm-build sbcl libffi-devel redhat-rpm-config git zlib-devel
+    - ./.ci/build.sh rpm
+    - ./.ci/tests.sh rpm
+
+pacman:
+  image: archlinux:latest
+  script:
+    - pacman -Sy --noconfirm ruby rubygems sbcl git libffi gcc make
+    - ./.ci/build.sh pacman
+    - ./.ci/tests.sh pacman
