@@ -55,7 +55,7 @@ Deploy is essentially taking this approach:
 - Copy everything into a folder
 - Archive that folder
 
-And you have to somehow figure out how to distribute that folder.
+And the user has to somehow figure out how to "install" that archive.
 
 `linux-packaging` is taking another approach:
 
