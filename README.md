@@ -21,6 +21,7 @@ All you need to do is declaring this in your `.asd`:
 (defsystem "foo-deb"
   :defsystem-depends-on ("linux-packaging")
   :class "linux-packaging:deb"
+  :build-operation "linux-packaging:build-op"
   :depends-on ("foo")
   :package-name "foo"
   :package-version "1.0.0"
@@ -104,6 +105,11 @@ those:
 - `linux-packaging:rpm`: if you want to build a .rpm package
 - `linux-packaging:deb`: if you want to build a .deb package
 - `linux-packaging:pacman`: if you want to build a .pkg package
+
+#### build-operation
+
+`:build-operation` is another default ASDF attribute. You need to set it to
+`linux-packaging:build-op`.
 
 #### author
 
