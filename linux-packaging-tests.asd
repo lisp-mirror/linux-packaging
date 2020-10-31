@@ -12,6 +12,7 @@
   :package-name "random-name"
   :verbose t
   :package-version #.(format nil "1.2.3")
+  :additional-dependencies ("emacs")
   :build-pathname "other-random-name"
   :entry-point "linux-packaging-tests/t/main:main")
 
@@ -23,6 +24,7 @@
   :package-name "random-name"
   :verbose t
   :package-version #.(format nil "1.2.3")
+  :additional-dependencies ("emacs")
   :build-pathname "other-random-name"
   :entry-point "linux-packaging-tests/t/main:main")
 
@@ -34,5 +36,6 @@
   :package-name "random-name"
   :verbose t
   :package-version #.(format nil "1.2.3")
+  :additional-dependencies ("emacs")
   :build-pathname "other-random-name"
   :entry-point "linux-packaging-tests/t/main:main")

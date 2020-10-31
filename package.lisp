@@ -63,6 +63,7 @@
    (package-version :initarg :package-version :initform nil :reader version)
    (ignored-libraries :initarg :ignored-libraries :initform nil :reader ignored-libraries)
    (additional-files :initarg :additional-files :initform nil :reader additional-files)
+   (additional-dependencies :initarg :additional-dependencies :initform nil :reader additional-dependencies)
    (verbose :initarg :verbose :initform nil :reader verbose)
    (package-type :reader package-type)))
 
@@ -88,6 +89,7 @@
   (let ((libraries-to-paths (ldconfig)))
     (remove-duplicates
      (append
+      (additional-dependencies system)
       (let ((system-deps (system-dependencies system)))
 	(d system "System dependencies: ~a~%" system-deps)
 	system-deps)

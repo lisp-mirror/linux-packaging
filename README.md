@@ -144,6 +144,15 @@ icons, documentation, etc, you can specify an alist of this kind:
 Those can also be pathnames if you want to be more specific on the
 exact files/directories to use.
 
+#### additional-dependencies
+
+You may need to provide arbitrary dependencies to your packages; those
+can be provided in a list:
+
+```lisp
+:additional-dependencies ("emacs")
+```
+
 ## License
 
 MIT License.
