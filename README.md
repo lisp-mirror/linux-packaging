@@ -116,6 +116,11 @@ those:
 `:author` is another default ASDF attribute, but it is used to define
 the package's author/maintainer.
 
+#### description
+
+`:description` is another default ASDF attribute, and is used to set
+the package's description.
+
 #### license
 
 `:license` is another default ASDF attribute, used to define the

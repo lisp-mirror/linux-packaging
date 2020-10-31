@@ -6,6 +6,7 @@
                 #:perform
                 #:system
                 #:system-author
+                #:system-description
                 #:system-license)
   (:import-from :asdf/system #:component-build-pathname)
   (:import-from :cffi
@@ -124,6 +125,8 @@
                                      (when maintainer (cat "--maintainer=" maintainer)))
                                   ,(let ((license (system-license s)))
                                      (when license (cat "--license=" license)))
+                                  ,(let ((description (system-description s)))
+                                     (when description (cat "--description=" description)))
                                   ,@(mapcar (lambda (dep)
                                               (cat "--depends=" dep))
                                             deps)
