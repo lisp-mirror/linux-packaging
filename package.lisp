@@ -49,8 +49,14 @@
 
 (defun additional-file->argument (additional-file)
   (format nil "~a=~a"
-          (first additional-file)
-          (right-pad "/" (rest additional-file))))
+          (let ((src (first additional-file)))
+            (if (pathnamep src)
+                (namestring src)
+                src))
+          (let ((dst (rest additional-file)))
+            (if (pathnamep dst)
+                (namestring dst)
+                (right-pad "/" dst)))))
 
 (defclass linux-package (system)
   ((package-name :initarg :package-name :initform nil :reader pkg-name)

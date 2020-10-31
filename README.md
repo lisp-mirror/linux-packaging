@@ -135,6 +135,9 @@ icons, documentation, etc, you can specify an alist of this kind:
 :additional-files (("file/path/during/build" . "folder/to/install/at/"))
 ```
 
+Those can also be pathnames if you want to be more specific on the
+exact files/directories to use.
+
 ## License
 
 MIT License.
