@@ -22,7 +22,7 @@
                 #:getenv
                 #:register-image-dump-hook
                 #:run-program)
-  (:import-from :uiop #:run-program)
+  (:import-from :uiop #:strcat #:run-program)
   (:import-from :cl-ppcre #:split)
   (:export #:linux-package
            #:system-dependencies
@@ -36,18 +36,15 @@
   `(when (verbose ,system)
      (funcall #'format t ,@args)))
 
-(defun cat (&rest args)
-  (apply #'concatenate 'string args))
-
 (defun last-elt (sequence)
   (subseq sequence (1- (length sequence))))
 
 (defun right-pad (char haystack)
   (check-type char string)
   (check-type haystack string)
-  (cat haystack
-       (unless (string= char (last-elt haystack))
-         char)))
+  (strcat haystack
+          (unless (string= char (last-elt haystack))
+            char)))
 
 (defun additional-file->argument (additional-file)
   (format nil "~a=~a"
@@ -122,13 +119,13 @@
                           `("fpm" "-s" "dir"
                                   "-t" ,(package-type s)
                                   ,(let ((maintainer (system-author s)))
-                                     (when maintainer (cat "--maintainer=" maintainer)))
+                                     (when maintainer (strcat "--maintainer=" maintainer)))
                                   ,(let ((license (system-license s)))
-                                     (when license (cat "--license=" license)))
+                                     (when license (strcat "--license=" license)))
                                   ,(let ((description (system-description s)))
-                                     (when description (cat "--description=" description)))
+                                     (when description (strcat "--description=" description)))
                                   ,@(mapcar (lambda (dep)
-                                              (cat "--depends=" dep))
+                                              (strcat "--depends=" dep))
                                             deps)
                                   "-n" ,(or (pkg-name s) (component-name s))
                                   "-v" ,(or (system-version s) (getenv "VERSION") "1.0.0")
