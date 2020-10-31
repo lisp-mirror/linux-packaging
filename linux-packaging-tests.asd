@@ -11,7 +11,7 @@
   :build-operation "linux-packaging:build-op"
   :package-name "random-name"
   :verbose t
-  :package-version #.(format nil "1.2.3")
+  :version #.(format nil "1.2.3")
   :additional-dependencies ("emacs")
   :build-pathname "other-random-name"
   :entry-point "linux-packaging-tests/t/main:main")
@@ -23,7 +23,7 @@
   :build-operation "linux-packaging:build-op"
   :package-name "random-name"
   :verbose t
-  :package-version #.(format nil "1.2.3")
+  :version #.(format nil "1.2.3")
   :additional-dependencies ("emacs")
   :build-pathname "other-random-name"
   :entry-point "linux-packaging-tests/t/main:main")
@@ -35,7 +35,7 @@
   :build-operation "linux-packaging:build-op"
   :package-name "random-name"
   :verbose t
-  :package-version #.(format nil "1.2.3")
+  :version #.(format nil "1.2.3")
   :additional-dependencies ("emacs")
   :build-pathname "other-random-name"
   :entry-point "linux-packaging-tests/t/main:main")
