@@ -38,5 +38,10 @@ sbcl \
     --load ~/quicklisp/setup.lisp \
     --eval "(ql:quickload :linux-packaging)" \
     --eval "(ql:quickload :linux-packaging-tests/$t)" \
+    --quit
+
+sbcl \
+    --eval '(setf *debugger-hook* (lambda (c h) (declare (ignore h)) (format t "~A~%" c) (sb-ext:quit :unix-status -1)))' \
+    --load ~/quicklisp/setup.lisp \
     --eval "(asdf:make :linux-packaging-tests/$t)" \
     --quit
