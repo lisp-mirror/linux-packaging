@@ -7,7 +7,8 @@
                 #:system
                 #:system-author
                 #:system-description
-                #:system-license)
+                #:system-license
+                #:system-version)
   (:import-from :asdf/system #:component-build-pathname)
   (:import-from :cffi
                 #:close-foreign-library
@@ -61,7 +62,6 @@
 
 (defclass linux-package (system)
   ((package-name :initarg :package-name :initform nil :reader pkg-name)
-   (package-version :initarg :package-version :initform nil :reader version)
    (ignored-libraries :initarg :ignored-libraries :initform nil :reader ignored-libraries)
    (additional-files :initarg :additional-files :initform nil :reader additional-files)
    (additional-dependencies :initarg :additional-dependencies :initform nil :reader additional-dependencies)
@@ -131,7 +131,7 @@
                                               (cat "--depends=" dep))
                                             deps)
                                   "-n" ,(or (pkg-name s) (component-name s))
-                                  "-v" ,(or (version s) (getenv "VERSION") "1.0.0")
+                                  "-v" ,(or (system-version s) (getenv "VERSION") "1.0.0")
                                   ,(format nil "~a=/usr/bin/" (component-build-pathname s))
                                   ,@(mapcar #'additional-file->argument
                                             (additional-files s))))))

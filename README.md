@@ -24,7 +24,7 @@ All you need to do is declaring this in your `.asd`:
   :build-operation "linux-packaging:build-op"
   :depends-on ("foo")
   :package-name "foo"
-  :package-version "1.0.0"
+  :version "1.0.0"
   :build-pathname "foo"
   :entry-point "foo:main")
 ```
@@ -126,16 +126,16 @@ the package's description.
 `:license` is another default ASDF attribute, used to define the
 package's license as well.
 
+#### version
+
+`:version` is another default ASDF attribute. It defines the version
+of the package. If not specified, `linux-packaging` will try looking
+in the `VERSION` environment variable, or fallback to `1.0.0`.
+
 #### package-name
 
 Defines the linux package name. If not specified, the system name is
 used. (In the example above, it would be `foo-deb`.)
-
-#### package-version
-
-Defines the version of the package. If not specified,
-`linux-packaging` will try looking in the `VERSION` environment
-variable, or fallback to `1.0.0`.
 
 #### additional-files
 
