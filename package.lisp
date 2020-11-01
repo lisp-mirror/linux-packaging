@@ -67,18 +67,7 @@
 
 (defmethod make-instance :after ((s linux-package) &key &allow-other-keys)
   (setf (slot-value s 'ignored-libraries)
-        (mapcar #'string-downcase (ignored-libraries s)))
-
-  ;;; Make sure we close statically linked libraries.
-  ;;; Remove when this or similar is done in cffi: https://github.com/cffi/cffi/pull/163
-  (register-image-dump-hook
-   (lambda ()
-     (loop for library in (list-foreign-libraries)
-           do (d s "Detecting library ~a of type ~a" library (foreign-library-type library))
-           when (eq (foreign-library-type library) :grovel-wrapper)
-             do (progn
-                  (d s "Closing ~a~%" library)
-                  (close-foreign-library library))))))
+        (mapcar #'string-downcase (ignored-libraries s))))
 
 (defgeneric system-dependencies (linux-package)
   (:documentation "Returns the dependencies that every Lisp image relies on."))
@@ -115,6 +104,15 @@
 (defclass build-op (static-program-op) ())
 
 (defmethod perform ((o build-op) (s system))
+  ;;; Make sure we close statically linked libraries.
+  ;;; Remove when this or similar is done in cffi: https://github.com/cffi/cffi/pull/163
+  (loop for library in (list-foreign-libraries)
+        do (d s "Detecting library ~a of type ~a" library (foreign-library-type library))
+        when (eq (foreign-library-type library) :grovel-wrapper)
+          do (progn
+               (d s "Closing ~a~%" library)
+               (close-foreign-library library)))
+
   (call-next-method o s)
 
   (let* ((deps (find-dependencies s))
