@@ -2,8 +2,10 @@
     (:use :cl)
   (:import-from :asdf
                 #:system
+                #:component-entry-point
                 #:component-name
                 #:perform
+                #:program-op
                 #:system
                 #:system-author
                 #:system-description
@@ -22,7 +24,7 @@
                 #:getenv
                 #:register-image-dump-hook
                 #:run-program)
-  (:import-from :uiop #:run-program)
+  (:import-from :uiop #:strcat #:run-program #:*image-entry-point*)
   (:import-from :cl-ppcre #:split)
   (:export #:linux-package
            #:system-dependencies
@@ -36,18 +38,15 @@
   `(when (verbose ,system)
      (funcall #'format t ,@args)))
 
-(defun cat (&rest args)
-  (apply #'concatenate 'string args))
-
 (defun last-elt (sequence)
   (subseq sequence (1- (length sequence))))
 
 (defun right-pad (char haystack)
   (check-type char string)
   (check-type haystack string)
-  (cat haystack
-       (unless (string= char (last-elt haystack))
-         char)))
+  (strcat haystack
+          (unless (string= char (last-elt haystack))
+            char)))
 
 (defun additional-file->argument (additional-file)
   (format nil "~a=~a"
@@ -70,15 +69,7 @@
 
 (defmethod make-instance :after ((s linux-package) &key &allow-other-keys)
   (setf (slot-value s 'ignored-libraries)
-        (mapcar #'string-downcase (ignored-libraries s)))
-
-  ;;; Make sure we close statically linked libraries.
-  ;;; Remove when this or similar is done in cffi: https://github.com/cffi/cffi/pull/163
-  (register-image-dump-hook
-   (lambda ()
-     (loop for library in (list-foreign-libraries)
-        when (eq (foreign-library-type library) :grovel-wrapper)
-        do (close-foreign-library library)))))
+        (mapcar #'string-downcase (ignored-libraries s))))
 
 (defgeneric system-dependencies (linux-package)
   (:documentation "Returns the dependencies that every Lisp image relies on."))
@@ -114,6 +105,18 @@
 
 (defclass build-op (static-program-op) ())
 
+(defmethod perform :before ((o program-op) (s system))
+  ;;; Make sure we close statically linked libraries.
+  ;;; Remove when this or similar is done in cffi: https://github.com/cffi/cffi/pull/163
+  (register-image-dump-hook
+   (lambda ()
+     (dolist (library (list-foreign-libraries))
+       (d s "Detecting library ~a of type ~a~%" library (foreign-library-type library))
+       (when (eql (foreign-library-type library) :grovel-wrapper)
+         (d s "Closing ~a~%" library)
+	 (close-foreign-library library)))))
+  (setf *image-entry-point* (component-entry-point s)))
+
 (defmethod perform ((o build-op) (s system))
   (call-next-method o s)
 
@@ -122,13 +125,13 @@
                           `("fpm" "-s" "dir"
                                   "-t" ,(package-type s)
                                   ,(let ((maintainer (system-author s)))
-                                     (when maintainer (cat "--maintainer=" maintainer)))
+                                     (when maintainer (strcat "--maintainer=" maintainer)))
                                   ,(let ((license (system-license s)))
-                                     (when license (cat "--license=" license)))
+                                     (when license (strcat "--license=" license)))
                                   ,(let ((description (system-description s)))
-                                     (when description (cat "--description=" description)))
+                                     (when description (strcat "--description=" description)))
                                   ,@(mapcar (lambda (dep)
-                                              (cat "--depends=" dep))
+                                              (strcat "--depends=" dep))
                                             deps)
                                   "-n" ,(or (pkg-name s) (component-name s))
                                   "-v" ,(or (system-version s) (getenv "VERSION") "1.0.0")
