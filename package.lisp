@@ -2,8 +2,10 @@
     (:use :cl)
   (:import-from :asdf
                 #:system
+                #:component-entry-point
                 #:component-name
                 #:perform
+                #:program-op
                 #:system
                 #:system-author
                 #:system-description
@@ -22,7 +24,7 @@
                 #:getenv
                 #:register-image-dump-hook
                 #:run-program)
-  (:import-from :uiop #:strcat #:run-program)
+  (:import-from :uiop #:strcat #:run-program #:*image-entry-point*)
   (:import-from :cl-ppcre #:split)
   (:export #:linux-package
            #:system-dependencies
@@ -103,16 +105,19 @@
 
 (defclass build-op (static-program-op) ())
 
-(defmethod perform ((o build-op) (s system))
+(defmethod perform :before ((o program-op) (s system))
   ;;; Make sure we close statically linked libraries.
   ;;; Remove when this or similar is done in cffi: https://github.com/cffi/cffi/pull/163
-  (loop for library in (list-foreign-libraries)
-        do (d s "Detecting library ~a of type ~a" library (foreign-library-type library))
-        when (eq (foreign-library-type library) :grovel-wrapper)
-          do (progn
-               (d s "Closing ~a~%" library)
-               (close-foreign-library library)))
+  (register-image-dump-hook
+   (lambda ()
+     (dolist (library (list-foreign-libraries))
+       (d s "Detecting library ~a of type ~a~%" library (foreign-library-type library))
+       (when (eql (foreign-library-type library) :grovel-wrapper)
+         (d s "Closing ~a~%" library)
+	 (close-foreign-library library)))))
+  (setf *image-entry-point* (component-entry-point s)))
 
+(defmethod perform ((o build-op) (s system))
   (call-next-method o s)
 
   (let* ((deps (find-dependencies s))
