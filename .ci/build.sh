@@ -29,6 +29,20 @@ mkdir -p ~/common-lisp
 git clone --depth=1 https://github.com/privet-kitty/wild-package-inferred-system.git ~/common-lisp/wild-package-inferred-system/ &> /dev/null
 git clone --depth=1 https://github.com/cffi/cffi.git ~/common-lisp/cffi/ &> /dev/null
 git clone --depth=1 https://gitlab.common-lisp.net/asdf/asdf.git ~/common-lisp/asdf/ &> /dev/null
+(
+    cd ~/common-lisp/asdf
+    set +e
+    make &> asdf-make.log
+    code=$?
+    set -e
+    test $code = 0 || (cat asdf-make.log && exit 1)
+
+    set +e
+    sbcl --load tools/install-asdf.lisp &> asdf-install.log
+    code=$?
+    set -e
+    test $code = 0 || (cat asdf-install.log && exit 1)
+)
 
 mkdir -p ~/.config/common-lisp/source-registry.conf.d/
 echo "(:tree \"$PWD/\")" > ~/.config/common-lisp/source-registry.conf.d/asdf.conf
