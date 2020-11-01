@@ -75,7 +75,9 @@
    (lambda ()
      (loop for library in (list-foreign-libraries)
         when (eq (foreign-library-type library) :grovel-wrapper)
-        do (close-foreign-library library)))))
+          do (progn
+               (d s "Closing ~a~%" library)
+               (close-foreign-library library))))))
 
 (defgeneric system-dependencies (linux-package)
   (:documentation "Returns the dependencies that every Lisp image relies on."))
