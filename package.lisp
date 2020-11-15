@@ -61,6 +61,7 @@
 
 (defclass linux-package (system)
   ((package-name :initarg :package-name :initform nil :reader pkg-name)
+   (homepage :initarg :homepage :initform nil :reader homepage)
    (ignored-libraries :initarg :ignored-libraries :initform nil :reader ignored-libraries)
    (additional-files :initarg :additional-files :initform nil :reader additional-files)
    (additional-dependencies :initarg :additional-dependencies :initform nil :reader additional-dependencies)
@@ -130,6 +131,8 @@
                                      (when license (strcat "--license=" license)))
                                   ,(let ((description (system-description s)))
                                      (when description (strcat "--description=" description)))
+                                  ,(let ((homepage (homepage s)))
+                                     (when homepage (strcat "--url=" homepage)))
                                   ,@(mapcar (lambda (dep)
                                               (strcat "--depends=" dep))
                                             deps)

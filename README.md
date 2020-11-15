@@ -137,6 +137,10 @@ in the `VERSION` environment variable, or fallback to `1.0.0`.
 Defines the linux package name. If not specified, the system name is
 used. (In the example above, it would be `foo-deb`.)
 
+#### homepage
+
+Defines the homepage showing up in the package's description.
+
 #### additional-files
 
 If you want to provide files in addition to the Lisp image, such as
