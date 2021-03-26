@@ -16,5 +16,5 @@
   ;; output is: "<package>:amd64: <file>"
   (first (split
 	  ":"
-	  (run-program `("dpkg" "-S" ,(namestring (truenamize path))
+	  (run-program `("dpkg" "-S" ,(namestring (truenamize path)))
 		       :output '(:string :stripped t)))))
